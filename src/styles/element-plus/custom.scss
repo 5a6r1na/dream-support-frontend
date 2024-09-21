@@ -1,0 +1,25 @@
+@forward "element-plus/theme-chalk/src/common/var.scss" with (
+  $colors: (
+    // Override primary color
+    "primary": ("base": #000000),
+  ),
+  $menu: (
+    // Override menu item height
+    "item-height": 45px,
+  ),
+  $border-radius: (
+    "base": 6px,
+    "small": 2px,
+    "round": 20px,
+    "circle": 100%,
+  ),
+  $card: (
+    "border-radius": 6px,
+  ),
+  $main: (
+    "padding": 10px 20px,
+  ),
+  $button: ()
+);
+
+@import "element-plus/theme-chalk/src/index.scss";
