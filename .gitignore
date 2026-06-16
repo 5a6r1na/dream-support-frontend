@@ -34,3 +34,8 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Internal audit deliverables — not for a public repo. The architecture,
+# analysis, and roadmap .docx files live here and describe known weaknesses
+# / a phased remediation plan we'd rather not publish.
+documents/audit/

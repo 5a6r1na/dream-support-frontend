@@ -73,11 +73,6 @@ const PROJECT_TYPE_OPTIONS = [
   { label: "教育補貼", value: "6" },
 ];
 
-const PROJECT_NAME_OPTIONS = [
-  { label: "急難救助", value: "1" },
-  { label: "獎助學金", value: "2" },
-];
-
 const PROJECT_RESULT_OPTIONS = [
   { label: "成功", value: "1" },
   { label: "失敗", value: "2" },

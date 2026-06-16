@@ -423,28 +423,17 @@ Mock.mock(
         {
           roleId: "100000",
           roleName: "管理者",
-          permission: [
-            "日本電力使用現況",
-            "日前市場即時資訊",
-            "電力數據分析工具",
-            "爬蟲管理",
-            "爬蟲日誌",
-            "帳號管理",
-          ],
+          permission: ["個案管理", "補助管理", "帳號管理"],
         },
         {
           roleId: "100001",
           roleName: "使用者",
-          permission: [
-            "日本電力使用現況",
-            "日前市場即時資訊",
-            "電力數據分析工具",
-          ],
+          permission: ["個案管理", "補助管理"],
         },
         {
           roleId: "100002",
-          roleName: "測試專員",
-          permission: ["爬蟲日誌"],
+          roleName: "測試員",
+          permission: ["個案管理", "補助管理"],
         },
       ],
       message: "成功",

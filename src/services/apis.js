@@ -1,329 +1,189 @@
-//apis.js
+// apis.js — single source of truth for backend HTTP calls.
+//
+// Base URL is read from the Vite environment (see .env / .env.production).
+// All endpoints are mounted under <baseURL>/... so individual functions never
+// hard-code hosts or ports.
+
 import axios from "axios";
-import qs from "qs";
+import { ElMessage } from "element-plus";
+import router from "../router";
+import { myStore, usePermissionStore } from "../stores/index";
 
-const serverDomain = window.VITE_APP_HDRE_API;
-const serverAuthDomain = window.VITE_APP_HDRE_API_AUTH;
+const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8081/api";
 
-const baseURL = "http://localhost:8081/api";
-const instance = axios.create({
-  baseURL: baseURL,
-});
+const instance = axios.create({ baseURL });
 
-import { myStore } from "../stores/index";
-
-//個案管理模組
-
-// 1.補助清單列表，查詢資料
-export const getProjectList = (data) => {
-  return instance.post(
-    `http://localhost:5173/api/case/getProjectList`,
-    // `http://localhost:8080/system/account/getProjectList`,
-    // `${serverDomain}/system/account/getProjectList`,
-    data
-  );
-};
-
-// 1.個案列表，查詢資料
-export const queryCases = (data) => {
-  return instance.post(
-    // `http://localhost:5173/api/case/queryCases`,
-    `http://localhost:8081/api/case/queryCases`,
-    // `${serverDomain}/system/account/queryAccounts`,
-    data
-  );
-};
-
-// 2.個案基本資料，查詢資料
-export const getCaseProfile = (data) => {
-  return instance.post(
-    // `http://localhost:5173/api/case/getCaseProfile`,
-    `http://localhost:8081/api/case/getCaseProfile`,
-    // `${serverDomain}/system/account/queryAccounts`,
-    data
-  );
-};
-
-// 3.個案基本資料，建立資料
-export const createCaseProfile = (data) => {
-  return instance.post(
-    // `http://localhost:5173/api/case/createCaseProfile`,
-    `http://localhost:8081/api/case/createCaseProfile`,
-    // `${serverDomain}/system/account/queryAccounts`,
-    data
-  );
-};
-
-// 4.個案基本資料，更新資料
-export const updateCaseProfile = (data) => {
-  return instance.post(
-    // `http://localhost:5173/api/case/updateCaseProfile`,
-    `http://localhost:8081/api/case/updateCaseProfile`,
-    // `${serverDomain}/system/account/updateCaseProfile`,
-    data
-  );
-};
-
-// 4.個案基本資料，刪除資料
-export const deleteCaseProfile = (data) => {
-  return instance.post(
-    // `http://localhost:5173/api/case/deleteCaseProfile`,
-    `http://localhost:8081/api/case/deleteCaseProfile`,
-    // `${serverDomain}/system/account/queryAccounts`,
-    data
-  );
-};
-
-// 5.個案背景資料，查詢資料
-export const getCaseBackground = (data) => {
-  return instance.post(
-    `http://localhost:8081/api/case/getCaseBackground`,
-    // `http://localhost:8080/system/account/queryAccounts`,
-    // `${serverDomain}/system/account/queryAccounts`,
-    data
-  );
-};
-
-// 6.個案背景資料，建立資料
-export const createCaseBackground = (data) => {
-  return instance.post(
-    `http://localhost:5173/api/case/createCaseBackground`,
-    // `http://localhost:8080/system/account/queryAccounts`,
-    // `${serverDomain}/system/account/queryAccounts`,
-    data
-  );
-};
-
-// 7.個案背景資料，更新資料
-export const updateCaseBackground = (data) => {
-  return instance.post(
-    `http://localhost:8081/api/case/updateCaseBackground`,
-    // `http://localhost:8080/system/account/queryAccounts`,
-    // `${serverDomain}/system/account/queryAccounts`,
-    data
-  );
-};
-
-// 9.下載補助方案申請表
-// export const downloadApplications = (data) => {
-//   return instance.post(
-//     // `http://localhost:5173/api/case/downloadApplications`,
-//     `http://localhost:8081/api/case/downloadApplications`,
-//     // `${serverDomain}/system/account/queryAccounts`,
-//     data
-//   );
-// };
-
-// 補助方案管理模組
-// 8.補助方案列表，查詢資料
-export const querySponsorProjects = (data) => {
-  return instance.post(
-    // `http://localhost:5173/api/sponsor/querySponsorProjects`,
-    `http://localhost:8081/api/sponsor/querySponsorProjects`,
-    // `${serverDomain}/system/account/queryAccounts`,
-    data
-  );
-};
-
-export const updateSponsorProject = (data) => {
-  return instance.post(
-    // `http://localhost:5173/api/sponsor/updateSponsorProject`,
-    `http://localhost:8081/api/sponsor/updateSponsorProject`,
-    // `${serverDomain}/system/account/queryAccounts`,
-    data
-  );
-};
-
-// 4.個案基本資料，刪除資料
-export const deleteSponsorProjects = (data) => {
-  return instance.post(
-    // `http://localhost:5173/api/case/deleteCaseProfile`,
-    `http://localhost:8081/api/sponsor/deleteSponsorProjects`,
-    // `${serverDomain}/system/account/queryAccounts`,
-    data
-  );
-};
-
-//帳號管理模組
-// 31.帳號列表，查詢資料
-export const queryAccounts = (data) => {
-  return instance.post(
-    `http://localhost:5173/api/system/account/queryAccounts`,
-    // `http://localhost:8080/system/account/queryAccounts`,
-    // `${serverDomain}/system/account/queryAccounts`,
-    data
-  );
-};
-// 32.帳號列表，新增資料
-export const createAccount = (data) => {
-  return instance.post(
-    // `http://localhost:5173/api/system/account/createAccount`,
-    `http://localhost:8080/system/account/createAccount`,
-    // `${serverDomain}/system/account/createAccount`,
-    data
-  );
-};
-// 33.帳號列表，更新資料
-export const updateAccount = (data) => {
-  return instance.post(
-    // `http://localhost:5173/api/system/account/updateAccount`,
-    // `${serverDomain}/system/account/updateAccount`,
-    `http://localhost:8080/system/account/updateAccount`,
-
-    data
-  );
-};
-//34.多筆更新資料權限群組
-export const updateAccounts = (data) => {
-  return instance.post(
-    // `http://localhost:5173/api/system/account/updateAccounts`,
-    `http://localhost:8080/system/account/updateAccounts`,
-    // `${serverDomain}/system/account/updateAccounts`,
-    data
-  );
-};
-//35.帳號列表，刪除資料
-export const deleteAccount = (data) => {
-  return instance.post(
-    // `http://localhost:5173/api/system/account/deleteAccount`,
-    `http://localhost:8080/system/account/deleteAccount`,
-    // `${serverDomain}/system/account/deleteAccount`,
-    data
-  );
-};
-// 36.權限群組列表，查詢資料
-export const queryPermissionGroups = (data) => {
-  return instance.post(
-    `http://localhost:5173/api/system/account/queryPermissionGroups`,
-    // `${serverDomain}/system/account/queryPermissionGroups`,
-    // `http://localhost:8080/system/account/queryPermissionGroups`,
-
-    data
-  );
-};
-// 37.權限群組列表，新增資料
-export const createPermissionGroup = (data) => {
-  return instance.post(
-    `http://localhost:5173/api/system/account/createPermissionGroup`,
-    // `http://localhost:8080/system/account/createPermissionGroup`,
-    // `${serverDomain}/system/account/createPermissionGroup`,
-    data
-  );
-};
-// 38.權限群組列表，更新資料
-export const updatePermissionGroup = (data) => {
-  return instance.post(
-    // `http://localhost:5173/api/system/account/updatePermissionGroup`,
-    `http://localhost:8080/system/account/updatePermissionGroup`,
-    // `${serverDomain}/system/account/updatePermissionGroup`,
-    data
-  );
-};
-// 39.權限群組列表，刪除資料
-export const deletePermissionGroup = (data) => {
-  return instance.post(
-    // `http://localhost:5173/api/system/account/deletePermissionGroup`,
-    `http://localhost:8080/system/account/deletePermissionGroup`,
-    // `${serverDomain}/system/account/deletePermissionGroup`,
-    data
-  );
-};
-// 40. [查詢] 權限下拉項目【單筆】
-export const getPermissionList = (data) => {
-  return instance.post(
-    `http://localhost:5173/api/system/account/getPermissionList`,
-    // `http://localhost:8080/system/account/getPermissionList`,
-    // `${serverDomain}/system/account/getPermissionList`,
-    data
-  );
-};
-// 41. [查詢] 權限群組下拉項目【單筆】
-export const getPermissionGroupList = (data) => {
-  return instance.post(
-    `http://localhost:5173/api/system/account/getPermissionGroupList`,
-    // `http://localhost:8080/system/account/getPermissionGroupList`,
-    // `${serverDomain}/system/account/getPermissionGroupList`,
-    data
-  );
-};
-
-//42. 登入
-//43. 登出
+// Attach Bearer token (when present) to every outgoing request.
 instance.interceptors.request.use(
   (config) => {
-    const storeData = localStorage.getItem("myStore");
-    let token = "";
-
     try {
-      if (storeData) {
-        const storeDataJson = JSON.parse(storeData);
-        token = storeDataJson["accessToken"];
-        config.headers["Authorization"] = `Bearer ${token}`;
+      const raw = localStorage.getItem("myStore");
+      if (raw) {
+        const token = JSON.parse(raw).accessToken;
+        if (token) config.headers["Authorization"] = `Bearer ${token}`;
       }
-    } catch (error) {
-      console.error("localStorage is not a valid JSON!");
+    } catch (e) {
+      console.warn("apis.js: malformed myStore in localStorage", e);
     }
-
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
+// HTTP error handling:
+//   401 on a non-/auth endpoint → token is invalid / expired → log the user
+//                                 out and bounce to /login.
+//   401 on /auth/login itself   → just a wrong-credentials response; let the
+//                                 caller surface its own message, don't touch
+//                                 the session.
+//   403                         → user is logged in but lacks permission for
+//                                 this specific request. Surface a toast and
+//                                 keep the session intact (do NOT log out).
 instance.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error) => {
-    // localStorage.removeItem("myStore");
-    router.push(`/login`);
+    const status = error?.response?.status;
+    const url = error?.config?.url || "";
+    const isAuthCall = url.includes("/auth/");
 
-    return Promise.reject(error);
-  }
-);
-
-export default {
-  loginAction: async (reqBody) => {
-    try {
-      const response = await instance.post(
-        `http://localhost:8080/auth/login`,
-        reqBody
-      );
-      console.log("API 回應:", response); // 檢查 API 的完整回應
-
-      // if (response.data && response.data.status) {
-      if (response.data) {
-        // 假設後端返回的是 token 和 userId
-        const accessToken = response.data.token;
-        const userId = response.data.userId; // 如果 response 中包含 userId
-
-        // 將 accessToken 和 userId 保存到 store
+    if (status === 401 && !isAuthCall) {
+      try {
         const store = myStore();
         store.$patch({
-          accessToken: accessToken,
-          userId: userId,
+          accessToken: "",
+          userId: "",
+          username: "",
+          fullName: "",
+          role: "",
+          roleId: null,
+          roleName: "",
+          permissions: [],
         });
-
-        // 將 accessToken 和 userId 保存到 localStorage
-        const storeData = {
-          accessToken: accessToken,
-          userId: userId,
-        };
-
-        localStorage.setItem("myStore", JSON.stringify(storeData));
-        console.log("成功儲存到 localStorage 和 myStore");
-
-        return response;
-      } else {
-        throw new Error("登入失敗");
+        usePermissionStore().setFromTokens([]);
+      } catch (_) { /* store may not be initialised yet */ }
+      localStorage.removeItem("myStore");
+      if (router.currentRoute.value.path !== "/login") {
+        router.push("/login");
       }
-    } catch (error) {
-      console.error("API 請求失敗:", error);
-      throw error;
+    } else if (status === 403) {
+      // Use the backend's localised message when present; otherwise a generic
+      // Chinese fallback. Important: we do NOT clear the token or redirect —
+      // the user is still legitimately logged in, they just can't perform
+      // this particular action.
+      const msg = error?.response?.data?.message || "您沒有執行此操作的權限";
+      try { ElMessage.warning(msg); } catch (_) { /* DOM may not be ready */ }
     }
+    return Promise.reject(error);
+  }
+);
+
+// ----- Case management -----
+export const queryCases = (data) => instance.post(`/case/queryCases`, data);
+export const getCaseProfile = (data) => instance.post(`/case/getCaseProfile`, data);
+export const createCaseProfile = (data) => instance.post(`/case/createCaseProfile`, data);
+export const updateCaseProfile = (data) => instance.post(`/case/updateCaseProfile`, data);
+export const deleteCaseProfile = (data) => instance.post(`/case/deleteCaseProfile`, data);
+export const getCaseBackground = (data) => instance.post(`/case/getCaseBackground`, data);
+export const updateCaseBackground = (data) => instance.post(`/case/updateCaseBackground`, data);
+export const createCaseHistory = (data) => instance.post(`/case/createCaseHistory`, data);
+export const getCaseHistory = (data) => instance.post(`/case/getCaseHistory`, data);
+export const deleteCaseHistories = (data) => instance.post(`/case/deleteCaseHistories`, data);
+export const downloadCaseApplications = (data) =>
+  instance.post(`/case/downloadCaseApplications`, data, { responseType: "blob" });
+
+// ----- Sponsor management -----
+export const querySponsorProjects = (data) => instance.post(`/sponsor/querySponsorProjects`, data);
+export const createSponsorProject = (data) =>
+  instance.post(`/sponsor/createSponsorProject`, data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+export const updateSponsorProject = (data) => instance.post(`/sponsor/updateSponsorProject`, data);
+export const updateSponsorProjectFile = (data) =>
+  instance.post(`/sponsor/updateSponsorProjectFile`, data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+export const deleteSponsorProjects = (data) => instance.post(`/sponsor/deleteSponsorProjects`, data);
+export const querySponsorSuccessRate = (data) => instance.post(`/sponsor/querySponsorSuccessRate`, data);
+export const downloadOriginalApplication = (data) =>
+  instance.post(`/sponsor/downloadOriginalApplication`, data, { responseType: "blob" });
+
+// ----- Account / permissions (UI exists but backend is not implemented yet)  -----
+// These endpoints intentionally route to /system/account/* on the same backend.
+// They will start working once the matching controllers are added; until then
+// they return 404 and the calling components fall back to mock data in dev.
+export const queryAccounts = (data) => instance.post(`/system/account/queryAccounts`, data);
+export const createAccount = (data) => instance.post(`/system/account/createAccount`, data);
+export const updateAccount = (data) => instance.post(`/system/account/updateAccount`, data);
+export const updateAccounts = (data) => instance.post(`/system/account/updateAccounts`, data);
+export const deleteAccount = (data) => instance.post(`/system/account/deleteAccount`, data);
+export const queryPermissionGroups = (data) => instance.post(`/system/account/queryPermissionGroups`, data);
+export const createPermissionGroup = (data) => instance.post(`/system/account/createPermissionGroup`, data);
+export const updatePermissionGroup = (data) => instance.post(`/system/account/updatePermissionGroup`, data);
+export const deletePermissionGroup = (data) => instance.post(`/system/account/deletePermissionGroup`, data);
+export const getPermissionList = (data) => instance.post(`/system/account/getPermissionList`, data);
+export const getPermissionGroupList = (data) => instance.post(`/system/account/getPermissionGroupList`, data);
+export const toggleAccountStatus = (data) => instance.post(`/system/account/toggleAccountStatus`, data);
+export const queryAuditLog = (data) => instance.post(`/system/account/queryAuditLog`, data);
+
+// ----- Authentication -----
+//
+// Login posts { username, password } and receives an ApiBaseResponse whose
+// body.data is { token, userId, username, fullName, expiresAt }. On success we
+// persist the token to localStorage via the Pinia store and resolve to the
+// response so the caller can react (toast, redirect, etc.).
+//
+// Logout is best-effort: we ask the server to acknowledge, then clear local
+// state regardless of the server's response. Failures here should not block
+// the user from being signed out client-side.
+export default {
+  loginAction: async ({ username, password }) => {
+    const response = await instance.post(`/auth/login`, { username, password });
+    const payload = response?.data?.data;
+    if (!payload || !payload.token) {
+      throw new Error(response?.data?.message || "Login failed");
+    }
+
+    const persisted = {
+      accessToken: payload.token,
+      userId: payload.userId,
+      username: payload.username,
+      fullName: payload.fullName,
+      role: payload.role,
+      roleId: payload.roleId,
+      roleName: payload.roleName,
+      permissions: payload.permissions || [],
+    };
+
+    myStore().$patch(persisted);
+    // Build the {moduleName}{Read|Write|Delete} permission map the rest of
+    // the UI consults via usePermissionStore.permissions.
+    usePermissionStore().setFromTokens(payload.permissions || []);
+
+    localStorage.setItem("myStore", JSON.stringify(persisted));
+    return response;
   },
-  logoutAction: () => {
-    return instance.post(`${serverAuthDomain}/logout`);
+
+  logoutAction: async () => {
+    try {
+      await instance.post(`/auth/logout`);
+    } catch (e) {
+      // Stateless logout — server failure is non-fatal for the client.
+      console.warn("logout request failed, clearing client state anyway", e);
+    }
+    try {
+      const store = myStore();
+      store.$patch({
+        accessToken: "",
+        userId: "",
+        username: "",
+        fullName: "",
+        role: "",
+        roleId: null,
+        roleName: "",
+        permissions: [],
+      });
+      usePermissionStore().setFromTokens([]);
+    } catch (_) { /* noop */ }
+    localStorage.removeItem("myStore");
   },
 };
