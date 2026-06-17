@@ -377,6 +377,11 @@
 import { computed, ref, reactive, onMounted, watch, nextTick } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { apiSwitch } from "../../stores/apiSwitch";
+
+// Base URL for the Spring Boot backend — read from VITE_API_BASE_URL
+// (e.g. ".env" / ".env.production"). The multipart upload and download
+// endpoints below use raw fetch instead of axios so they need this directly.
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8081/api";
 import { useAccountStore, usePermissionStore } from "../../stores/index";
 import { storeToRefs } from "pinia";
 import { PROJECT_TYPE_OPTIONS } from "../../dropdownOptions";
@@ -456,7 +461,7 @@ const createSponsorProject = (options) => {
       console.log(formData.get("memo"));
 
       // [STEP]: Call backend api
-      fetch("http://localhost:8081/api/sponsor/createSponsorProject", {
+      fetch(`${API_BASE}/sponsor/createSponsorProject`, {
         method: "POST",
         body: formData,
       })
@@ -613,7 +618,7 @@ const handleFileDownload = async (row) => {
     };
 
     // [STEP]: Call backend api
-    fetch("http://localhost:8081/api/sponsor/downloadOriginalApplication", {
+    fetch(`${API_BASE}/sponsor/downloadOriginalApplication`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -773,7 +778,7 @@ const updateSponsorProjectFile = (options) => {
       console.log(formData.get("id"));
 
       // [STEP]: Call backend api
-      fetch("http://localhost:8081/api/sponsor/updateSponsorProjectFile", {
+      fetch(`${API_BASE}/sponsor/updateSponsorProjectFile`, {
         method: "POST",
         body: formData,
       })
