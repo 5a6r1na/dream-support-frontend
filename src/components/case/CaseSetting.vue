@@ -598,6 +598,21 @@ import { useCaseStore } from "../../stores/caseStore";
 import { usePermissionStore } from "../../stores/index";
 import { storeToRefs } from "pinia";
 
+// Raw-fetch helpers — the download endpoint below needs a Blob response so we
+// bypass axios. Base URL + Authorization header are wired the same way as
+// services/apis.js so the request behaves identically to other API calls.
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8081/api";
+function authHeaders() {
+  try {
+    const raw = localStorage.getItem("myStore");
+    if (raw) {
+      const token = JSON.parse(raw).accessToken;
+      if (token) return { Authorization: `Bearer ${token}` };
+    }
+  } catch (_) { /* malformed localStorage — fall through */ }
+  return {};
+}
+
 const caseStore = useCaseStore();
 const { isSelectHistory } = storeToRefs(caseStore);
 
@@ -983,10 +998,11 @@ const handleDownload = async () => {
       sponsorId: filteredProjectList.value[0].projectId,
     };
 
-    fetch("http://localhost:8081/api/case/downloadCaseApplications", {
+    fetch(`${API_BASE}/case/downloadCaseApplications`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        ...authHeaders(),
       },
       body: JSON.stringify(req),
     })

@@ -382,6 +382,22 @@ import { apiSwitch } from "../../stores/apiSwitch";
 // (e.g. ".env" / ".env.production"). The multipart upload and download
 // endpoints below use raw fetch instead of axios so they need this directly.
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8081/api";
+
+/**
+ * Builds the Authorization header from the persisted Pinia session, mirroring
+ * the axios interceptor in services/apis.js. Raw fetch() calls below need
+ * this because they don't go through the axios instance.
+ */
+function authHeaders() {
+  try {
+    const raw = localStorage.getItem("myStore");
+    if (raw) {
+      const token = JSON.parse(raw).accessToken;
+      if (token) return { Authorization: `Bearer ${token}` };
+    }
+  } catch (_) { /* malformed localStorage — fall through */ }
+  return {};
+}
 import { useAccountStore, usePermissionStore } from "../../stores/index";
 import { storeToRefs } from "pinia";
 import { PROJECT_TYPE_OPTIONS } from "../../dropdownOptions";
@@ -463,6 +479,7 @@ const createSponsorProject = (options) => {
       // [STEP]: Call backend api
       fetch(`${API_BASE}/sponsor/createSponsorProject`, {
         method: "POST",
+        headers: authHeaders(),
         body: formData,
       })
         .then((response) => {
@@ -619,9 +636,12 @@ const handleFileDownload = async (row) => {
 
     // [STEP]: Call backend api
     fetch(`${API_BASE}/sponsor/downloadOriginalApplication`, {
+      // axios isn't used here because we need a raw Response for the blob.
+      // Auth header is injected manually to match the axios interceptor.
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        ...authHeaders(),
       },
       body: JSON.stringify(req),
     })
@@ -780,6 +800,7 @@ const updateSponsorProjectFile = (options) => {
       // [STEP]: Call backend api
       fetch(`${API_BASE}/sponsor/updateSponsorProjectFile`, {
         method: "POST",
+        headers: authHeaders(),
         body: formData,
       })
         .then((response) => {
